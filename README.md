@@ -1,0 +1,1 @@
+Scaffold-DbContext -Connection "Database=HackathonTest;Username=postgres;Host=127.0.0.1;Persist Security Info=True;Password=********" -Provider "Npgsql.EntityFrameworkCore.PostgreSQL" -Namespace HackathonTest.Entities -OutputDir Entities -Context HackathonTestContext -ContextDir Database -ContextNamespace HackathonTest.Database
