@@ -18,18 +18,16 @@ Scaffold-DbContext -Connection "Database=HackathonTest;Username=postgres;Host=12
 
 ## Export the database
 
-Right click `HackathonTest > Backup`
+Right click `HackathonTest > Backup`:
+- In `General > Format` enter *Plain*
+- In `Data Options > Only schemas` ensure *Checked*
 
-In `General > Format` enter *Plain*
-In `Data Options > Only schemas` ensure *Checked*
+### Common error
 
-If you get
-
+If you get the [following error](https://github.com/pgadmin-org/pgadmin4/issues/7969#issuecomment-2378481828):
 ```
 pg_dump: error: aborting because of server version mismatch
 pg_dump: detail: server version: 17.0; pg_dump version: 16.4
 ```
 
-Click [here](https://github.com/pgadmin-org/pgadmin4/issues/7969#issuecomment-2378481828)
-
-Basically, in `File > Preferences > Paths > Binary Paths > PostgreSQL Binary Path` check *PostgreSQL 17* and enter `C:\Program Files\PostgreSQL\17\bin`
+In `File > Preferences > Paths > Binary Paths > PostgreSQL Binary Path` check *PostgreSQL 17* and enter `C:\Program Files\PostgreSQL\17\bin`
