@@ -117,7 +117,7 @@ internal class Login : IMenu
     { 
       using HackathonTestContext context = new();
 
-      return context.Transactions.Where(t => t.CreatedById == _member.Id && t.Done).ToArray()
+      return context.Transactions.Where(t => t.CreatedById == _member.Id && t.Done).ToArray();
     }
 
     return [];

@@ -5,7 +5,7 @@ using HackathonTest.Menus.Interface;
 
 namespace HackathonTest.Menus;
 
-internal class FormSections : SelectMenu<Form>, IMenu
+internal class FormSections : SimpleMenu<Form>, IMenu
 {
   public override char Tag { get; } = 's';
 
