@@ -4,7 +4,7 @@ using HackathonTest.Menus.Interface;
 
 namespace HackathonTest.Menus.Abstraction;
 
-internal abstract class Menu<TNameable> : IMenu<TNameable> where TNameable : class, INameable, new()
+internal abstract class CrudMenu<TNameable> : IMenu<TNameable> where TNameable : class, INameable, new()
 {
   public abstract char Tag { get; }
 

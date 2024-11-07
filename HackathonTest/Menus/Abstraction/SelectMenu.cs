@@ -3,7 +3,7 @@ using HackathonTest.Menus.Interface;
 
 namespace HackathonTest.Menus.Abstraction;
 
-internal abstract class SubMenu<TSelected> : IMenu where TSelected : class, INameable, new()
+internal abstract class SelectMenu<TSelected> : IMenu where TSelected : class, INameable, new()
 {
   protected TSelected? _selected = null;
 

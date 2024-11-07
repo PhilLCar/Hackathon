@@ -15,13 +15,13 @@ internal class Login : IMenu
     throw new NotImplementedException();
   }
 
-  public void SubmitForm(Form form)
+  public void StartForm(Form form)
   {
     using HackathonTestContext context = new();
 
     Transaction transaction = new()
     {
-      FormId = form.Id,
+      FormId      = form.Id,
       CreatedById = _member!.Id
     };
 
@@ -32,54 +32,106 @@ internal class Login : IMenu
     {
       TransactionId = transaction.Id,
       FormSectionId = form.FormSections.First().Id,
-      OwnerId = _member!.Id
+      OwnerId       = _member!.Id
     };
 
     context.Add(owner);
     context.SaveChanges();
-
-    CompleteTransaction(owner);
   }
 
-  public void CompleteTransaction(TransactionOwner owner)
+  public void CompleteTransaction(TransactionOwner owner, Func<FormField, TransactionField> fill)
   {
     using HackathonTestContext context = new();
 
+    FormSection section = owner.FormSection;
+
+    context.Entry(section).Reload();
+    context.Entry(section).Collection(s => s.FormFields).Load();
+
+    foreach (FormField f in section.FormFields)
+    {
+      TransactionField? tf = context.TransactionFields.SingleOrDefault(t => t.TransactionId == owner.TransactionId && f.Id == t.FormFieldId);
+
+      if (tf == null)
+      {
+        tf = fill(f);
+
+        context.Add(tf);
+        context.SaveChanges();
+      }
+    }
   }
 
-  public List<Transaction> CurrentForms()
+  public void SubmitForm(TransactionOwner owner, Func<Member> submitTo)
+  {
+    using HackathonTestContext context = new();
+
+    FormSection[] sections = context.FormSections.OrderBy(s => s.Id).ToArray();
+
+    int current = 0;
+
+    Member member;
+
+    for (current = 0; current < sections.Length; current++)
+    {
+      if (sections[current].Id == owner.FormSectionId)
+      {
+        break;
+      }
+    }
+
+    if (current < sections.Length - 1)
+    {
+      // PASS UP
+      member = submitTo();
+
+
+    }
+    else
+    {
+      // DONE
+      context.Attach(owner);
+
+      owner.OwnerId          = null;
+      owner.Transaction.Done = true;
+
+      context.SaveChanges();
+    }
+  }
+
+  public Transaction[] CurrentForms()
   {
     if (_member != null)
     { 
       using HackathonTestContext context = new();
 
-      return context.TransactionOwners.Where(t => t.OwnerId == _member.Id).Select(t => t.Transaction).ToList();
+      return context.TransactionOwners.Where(t => t.OwnerId == _member.Id).Select(t => t.Transaction).ToArray();
     }
 
-    return new();
+    return [];
   }
 
-  public List<Transaction> CompletedForms()
+  public Transaction[] CompletedForms()
   {
     if (_member != null)
     { 
       using HackathonTestContext context = new();
 
-      return context.Transactions.Where(t => t.CreatedById == _member.Id && t.Done).ToList();
+      return context.Transactions.Where(t => t.CreatedById == _member.Id && t.Done).ToArray()
     }
 
-    return new();
+    return [];
   }
 
-  public List<Transaction> SubmittedForms()
+  public Transaction[] SubmittedForms()
   {
     if (_member != null)
     { 
       using HackathonTestContext context = new();
 
-      return context.Transactions.Where(t => t.CreatedById == _member.Id && !t.Done).ToList();
+      return context.Transactions.Where(t => t.CreatedById == _member.Id && !t.Done).ToArray();
     }
 
-    return new();
+    return [];
   }
 }

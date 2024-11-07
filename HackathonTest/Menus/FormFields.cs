@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HackathonTest.Menus;
 
-internal class FormFields : SubMenu<FormSection>, IMenu
+internal class FormFields : SelectMenu<FormSection>, IMenu
 {
   public override char Tag { get; } = 'F';
 
