@@ -13,9 +13,9 @@ public partial class TransactionOwner
 
     public DateTime Date { get; set; }
 
-    public int FormSectionId { get; set; }
+    public int? FormSectionId { get; set; }
 
-    public virtual FormSection FormSection { get; set; } = null!;
+    public virtual FormSection? FormSection { get; set; }
 
     public virtual Member? Owner { get; set; }
 

@@ -1,5 +1,3 @@
 .vs
 **/obj
 **/bin
-packages
-HackathonTest/Database/HackathonTestContext.cs
