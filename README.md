@@ -1,9 +1,9 @@
 # SETUP
 
 Required tools:
-- (Visual Studio Community Edition 2022)[https://visualstudio.microsoft.com/vs/community/]
-- (.NET 8.0)[https://dotnet.microsoft.com/en-us/download/dotnet/8.0]
-- (PostgreSQL)[https://www.postgresql.org/download/]
+- [Visual Studio Community Edition 2022](https://visualstudio.microsoft.com/vs/community/)
+- [.NET 8.0](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+- [PostgreSQL](https://www.postgresql.org/download/)
 
 Once all tools are installed, you need to set a *User Environment Variable* `POSTGRES_PASSWORD` that contains your password to the `postgres` user on your database
 
