@@ -13,7 +13,7 @@ You can build the database from the SQL file `HackathonTest.sql`, please update 
 
 Then you can run this command in the *Package Manager Console* of *Visual Studio* to scaffold the database.
 ```PowerShell
-Scaffold-DbContext -Connection "Database=HackathonTest;Username=postgres;Host=127.0.0.1;Password=$env:POSTGRES_PASSWORD;Persist Security Info=True" -Namespace HackathonTest.Entities -OutputDir Entities -Context HackathonTestContext -ContextDir Database -ContextNamespace HackathonTest.Database -Force -Provider Npgsql.EntityFrameworkCore.PostgreSQL
+Scaffold-DbContext -Connection "Database=HackathonTest;Username=postgres;Host=127.0.0.1;Password=$env:POSTGRES_PASSWORD;Persist Security Info=True" -Namespace HackathonTest.Entities -OutputDir Entities -Context HackathonTestContext -ContextDir Database -ContextNamespace HackathonTest.Database -Force -Provider Npgsql.EntityFrameworkCore.PostgreSQL -NoOnConfiguring
 ```
 
 ## Export the database
