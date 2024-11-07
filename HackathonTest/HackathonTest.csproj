@@ -18,10 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Database\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="..\README.md" />
   </ItemGroup>
   
