@@ -5,6 +5,20 @@ namespace HackathonTest.API;
 
 internal static class Forms
 {
+  public static Form[] ReadAll()
+  {
+    using HackathonTestContext context = new();
+
+    return context.Forms.ToArray();
+  }
+
+  public static Form? Read(string name)
+  {
+    using HackathonTestContext context = new();
+
+    return context.Forms.SingleOrDefault(f => f.Name == name);
+  }
+
   public static Form Create(string name, string? description = null)
   {
     using HackathonTestContext context = new();
@@ -21,7 +35,7 @@ internal static class Forms
     return form;
   }
 
-  public static bool AddSection(Form form, string name)
+  public static bool AddSection(this Form form, string name)
   {
     using HackathonTestContext context = new();
 
@@ -34,7 +48,7 @@ internal static class Forms
     return success;
   }
 
-  public static bool RemoveSection(Form form, string name)
+  public static bool RemoveSection(this Form form, string name)
   {
     using HackathonTestContext context = new();
 
@@ -47,7 +61,7 @@ internal static class Forms
     return success;
   }
 
-  public static bool AddAccess(Form form, int accessId, int accessTypeId)
+  public static bool AddAccess(this Form form, int accessId, int accessTypeId)
   {
     using HackathonTestContext context = new();
 
@@ -60,7 +74,7 @@ internal static class Forms
     return success;
   }
 
-  public static bool RemoveAccess(Form form, int formAccessId)
+  public static bool RemoveAccess(this Form form, int formAccessId)
   {
     using HackathonTestContext context = new();
 
@@ -73,7 +87,7 @@ internal static class Forms
     return success;
   }
 
-  public static bool Delete(Form form)
+  public static bool Delete(this Form form)
   {
     using HackathonTestContext context = new();
 
