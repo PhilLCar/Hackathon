@@ -11,5 +11,13 @@ public partial class FormInput
 
     public int FormSectionId { get; set; }
 
+    public int InputId { get; set; }
+
+    public bool Mandatory { get; set; }
+
     public virtual FormSection FormSection { get; set; } = null!;
+
+    public virtual Input Input { get; set; } = null!;
+
+    public virtual ICollection<TransactionInput> TransactionInputs { get; set; } = new List<TransactionInput>();
 }

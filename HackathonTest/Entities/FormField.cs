@@ -13,6 +13,8 @@ public partial class FormField
 
     public string Name { get; set; } = null!;
 
+    public bool Mandatory { get; set; }
+
     public virtual Field Field { get; set; } = null!;
 
     public virtual FormSection FormSection { get; set; } = null!;

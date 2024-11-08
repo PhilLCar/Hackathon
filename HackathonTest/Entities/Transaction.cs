@@ -21,5 +21,7 @@ public partial class Transaction
 
     public virtual ICollection<TransactionField> TransactionFields { get; set; } = new List<TransactionField>();
 
+    public virtual ICollection<TransactionInput> TransactionInputs { get; set; } = new List<TransactionInput>();
+
     public virtual ICollection<TransactionOwner> TransactionOwners { get; set; } = new List<TransactionOwner>();
 }

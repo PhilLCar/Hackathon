@@ -12,15 +12,27 @@ public partial class HackathonTestContext : DbContext
     {
     }
 
+    public virtual DbSet<Access> Accesses { get; set; }
+
+    public virtual DbSet<AccessGrant> AccessGrants { get; set; }
+
+    public virtual DbSet<AccessGroup> AccessGroups { get; set; }
+
+    public virtual DbSet<AccessType> AccessTypes { get; set; }
+
     public virtual DbSet<Field> Fields { get; set; }
 
     public virtual DbSet<Form> Forms { get; set; }
+
+    public virtual DbSet<FormAccess> FormAccesses { get; set; }
 
     public virtual DbSet<FormField> FormFields { get; set; }
 
     public virtual DbSet<FormInput> FormInputs { get; set; }
 
     public virtual DbSet<FormSection> FormSections { get; set; }
+
+    public virtual DbSet<Input> Inputs { get; set; }
 
     public virtual DbSet<Member> Members { get; set; }
 
@@ -30,10 +42,50 @@ public partial class HackathonTestContext : DbContext
 
     public virtual DbSet<TransactionField> TransactionFields { get; set; }
 
+    public virtual DbSet<TransactionInput> TransactionInputs { get; set; }
+
     public virtual DbSet<TransactionOwner> TransactionOwners { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Access>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("Accesses_pkey");
+
+            entity.Property(e => e.Name).HasMaxLength(8);
+        });
+
+        modelBuilder.Entity<AccessGrant>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("AccessGrants_pkey");
+
+            entity.Property(e => e.Uic).HasColumnName("uic");
+
+            entity.HasOne(d => d.AccessType).WithMany(p => p.AccessGrants)
+                .HasForeignKey(d => d.AccessTypeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("AccessGrants_AccessTypeId_fkey");
+
+            entity.HasOne(d => d.Group).WithMany(p => p.AccessGrants)
+                .HasForeignKey(d => d.GroupId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("AccessGrants_GroupId_fkey");
+        });
+
+        modelBuilder.Entity<AccessGroup>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("AccessGroups_pkey");
+
+            entity.Property(e => e.Name).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<AccessType>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("AccessTypes_pkey");
+
+            entity.Property(e => e.Name).HasMaxLength(50);
+        });
+
         modelBuilder.Entity<Field>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("fields_pkey");
@@ -56,6 +108,26 @@ public partial class HackathonTestContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(25);
         });
 
+        modelBuilder.Entity<FormAccess>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("FormAccesses_pkey");
+
+            entity.HasOne(d => d.Access).WithMany(p => p.FormAccesses)
+                .HasForeignKey(d => d.AccessId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FormAccesses_AccessId_fkey");
+
+            entity.HasOne(d => d.AccessType).WithMany(p => p.FormAccesses)
+                .HasForeignKey(d => d.AccessTypeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FormAccesses_AccessTypeId_fkey");
+
+            entity.HasOne(d => d.Form).WithMany(p => p.FormAccesses)
+                .HasForeignKey(d => d.FormId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FormAccesses_FormId_fkey");
+        });
+
         modelBuilder.Entity<FormField>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("formfields_pkey");
@@ -63,6 +135,7 @@ public partial class HackathonTestContext : DbContext
             entity.HasIndex(e => new { e.Name, e.FormSectionId }, "FormFields_Name_FormSectionId_key").IsUnique();
 
             entity.Property(e => e.Id).HasDefaultValueSql("nextval('formfields_id_seq'::regclass)");
+            entity.Property(e => e.Mandatory).HasDefaultValue(true);
             entity.Property(e => e.Name).HasMaxLength(50);
 
             entity.HasOne(d => d.Field).WithMany(p => p.FormFields)
@@ -80,12 +153,18 @@ public partial class HackathonTestContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("FormInputs_pkey");
 
+            entity.Property(e => e.Mandatory).HasDefaultValue(true);
             entity.Property(e => e.Name).HasMaxLength(25);
 
             entity.HasOne(d => d.FormSection).WithMany(p => p.FormInputs)
                 .HasForeignKey(d => d.FormSectionId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FormInputs_FormSectionId_fkey");
+
+            entity.HasOne(d => d.Input).WithMany(p => p.FormInputs)
+                .HasForeignKey(d => d.InputId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FormInputs_InputId_fkey");
         });
 
         modelBuilder.Entity<FormSection>(entity =>
@@ -101,6 +180,16 @@ public partial class HackathonTestContext : DbContext
                 .HasConstraintName("Roles_FormId_fkey");
         });
 
+        modelBuilder.Entity<Input>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("Inputs_pkey");
+
+            entity.HasIndex(e => e.Name, "Inputs_Name_key").IsUnique();
+
+            entity.Property(e => e.Description).HasMaxLength(100);
+            entity.Property(e => e.Name).HasMaxLength(50);
+        });
+
         modelBuilder.Entity<Member>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("members_pkey");
@@ -109,6 +198,9 @@ public partial class HackathonTestContext : DbContext
 
             entity.Property(e => e.Id).HasDefaultValueSql("nextval('members_id_seq'::regclass)");
             entity.Property(e => e.Email).HasMaxLength(50);
+            entity.Property(e => e.Uic)
+                .HasDefaultValue(0)
+                .HasColumnName("UIC");
         });
 
         modelBuilder.Entity<MemberField>(entity =>
@@ -166,6 +258,23 @@ public partial class HackathonTestContext : DbContext
                 .HasForeignKey(d => d.TransactionId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("transactionfields_transactionid_fkey");
+        });
+
+        modelBuilder.Entity<TransactionInput>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("TransactionInputs_pkey");
+
+            entity.Property(e => e.Value).HasMaxLength(100);
+
+            entity.HasOne(d => d.FormInput).WithMany(p => p.TransactionInputs)
+                .HasForeignKey(d => d.FormInputId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("TransactionInputs_FormInputId_fkey");
+
+            entity.HasOne(d => d.Transaction).WithMany(p => p.TransactionInputs)
+                .HasForeignKey(d => d.TransactionId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("TransactionInputs_TransactionId_fkey");
         });
 
         modelBuilder.Entity<TransactionOwner>(entity =>

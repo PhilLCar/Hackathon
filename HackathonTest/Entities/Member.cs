@@ -9,6 +9,8 @@ public partial class Member
 
     public string Email { get; set; } = null!;
 
+    public int Uic { get; set; }
+
     public virtual ICollection<MemberField> MemberFields { get; set; } = new List<MemberField>();
 
     public virtual ICollection<TransactionOwner> TransactionOwners { get; set; } = new List<TransactionOwner>();
